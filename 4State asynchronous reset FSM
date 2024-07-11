@@ -1,0 +1,24 @@
+module top_module(
+    input clk,
+    input in,
+    input areset,
+    output out);   
+    parameter A=0, B=1, C=2, D=3; //Set the parameters
+    reg [3:0] state;
+    reg [3:0] n_state; //register for state changing
+    always @(in) begin // State transition logic
+        case (state)
+            A: n_state = in ? B : A;
+            B: n_state = in ? B : C;
+            C: n_state = in ? D : A;
+            D: n_state = in ? B : C;
+        endcase
+    end
+    always @(posedge clk, posedge areset) begin // State flip-flops with asynchronous reset
+        if (areset)
+            state = A;
+        else 
+            state = n_state;
+    end
+    assign out = (state == D); // Output logic
+endmodule
